@@ -13,7 +13,7 @@
  - HADDADIA Saad
  - BENGOUG Cheikh Hadrami
    
-**Liste des Fonctionnalités Principales** 
+3. **Liste des Fonctionnalités Principales** 
  - Inscription et authentification des utilisateurs
  - Création, modification et suppression des tâches
  - Attribution des tâches aux membres
