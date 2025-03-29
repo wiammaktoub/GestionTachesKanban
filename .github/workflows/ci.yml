@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Navigate to Maven project directory
-        run: cd GestionTachesKanban/KanbanApp
+        run: cd KanbanApp
 
       - name: Build with Maven
         run: mvn clean install
