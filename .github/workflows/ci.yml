@@ -17,7 +17,7 @@ jobs:
         with:
           java-version: "17"
           distribution: "temurin"
-      
+
       - name: Build with Maven
-        working-directory: KanbanApp # Chemin vers le répertoire contenant le pom.xml
+        working-directory: KanbanApp  # Chemin vers ton dossier contenant le pom.xml
         run: mvn clean install
