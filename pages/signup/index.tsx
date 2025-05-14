@@ -1,13 +1,13 @@
 import React from 'react';
-import Login from '@/src/components/login';
+import SignUp from '@/src/components/signup';
 import { Box } from '@chakra-ui/react';
 
-const LoginPage = () => {
+const SignUpPage = () => {
   return (
     <Box height="100vh" bg="lightblue">
-      <Login />
+      <SignUp />
     </Box>
   );
 };
 
-export default LoginPage;
+export default SignUpPage;

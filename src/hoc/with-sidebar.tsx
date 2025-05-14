@@ -6,6 +6,7 @@ import {
   AiOutlineCreditCard,
   AiOutlineBuild
 } from 'react-icons/ai';
+import Link from 'next/link';
 
 const withSidebar = (WrappedComponent, props) => {
   return class BoardWithSidebar extends Component {
@@ -14,23 +15,33 @@ const withSidebar = (WrappedComponent, props) => {
     }
 
     render() {
+      const { page } = props;
+
+      const sidebarMenu = [
+        { path: '/home', buttonName: 'Home', page: 'home', icon: AiOutlineHome },
+        { path: '/boards', buttonName: 'Boards', page: 'boards', icon: AiOutlineCreditCard },
+        { path: '/templates', buttonName: 'Templates', page: 'templates', icon: AiOutlineBuild },
+        { path: '/settings', buttonName: 'Settings', page: 'settings', icon: AiOutlineSetting }
+      ];
+
       return (
         <Container maxW="container.xl" display="table">
           <Box display="flex" mt="5%">
-            <Box minHeight="50vh" flexGrow={1} boxShadow="lg" rounded="lg" p="1em">
+            <Box minHeight="50vh" width="25vw" boxShadow="lg" rounded="lg" p="1em">
               <Box display="flex" flexDirection="column">
-                <Button mb="5px" display="flex" justifyContent="left">
-                  <AiOutlineHome /> &nbsp; Home
-                </Button>
-                <Button mb="5px" display="flex" justifyContent="left">
-                  <AiOutlineCreditCard /> &nbsp; Boards
-                </Button>
-                <Button mb="5px" display="flex" justifyContent="left">
-                  <AiOutlineBuild /> &nbsp; Templates
-                </Button>
-                <Button mb="5px" display="flex" justifyContent="left">
-                  <AiOutlineSetting /> &nbsp; Settings
-                </Button>
+                {sidebarMenu.map((menu, index) => (
+                  <Link href={menu.path} key={index}>
+                    <Button
+                      mb="5px"
+                      display="flex"
+                      justifyContent="left"
+                      colorScheme={page === menu.page ? 'blue' : 'gray'}>
+                      <>
+                        <menu.icon /> &nbsp; {menu.buttonName}
+                      </>
+                    </Button>
+                  </Link>
+                ))}
               </Box>
             </Box>
             <WrappedComponent />
