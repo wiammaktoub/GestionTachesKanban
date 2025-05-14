@@ -1,16 +1,3 @@
-# trello-clone
-
-## color code
-
-https://www.designpieces.com/palette/trello-color-palette-hex-and-rgb/
-
-## illustrations
-
-https://www.uistore.design/items/free-remote-work-illustrations/?ref=lapaninja
-
-## icons
-
-https://github.com/react-icons/react-icons
 
 # GestionTachesKanban
 
@@ -30,3 +17,18 @@ https://github.com/react-icons/react-icons
 - Création, modification et suppression des tâches.
 - Attribution des tâches aux membres.
 - Affichage sous forme de tableau Kanban.
+
+
+# trello-clone
+
+## color code
+
+https://www.designpieces.com/palette/trello-color-palette-hex-and-rgb/
+
+## illustrations
+
+https://www.uistore.design/items/free-remote-work-illustrations/?ref=lapaninja
+
+## icons
+
+https://github.com/react-icons/react-icons
