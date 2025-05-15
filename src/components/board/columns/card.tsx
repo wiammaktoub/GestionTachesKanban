@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Badge } from '@chakra-ui/react';
 import { Draggable } from 'react-beautiful-dnd';
 import { CardDetail } from '@/src/types/cards';
 
@@ -28,10 +28,15 @@ const Card: FC<Props> = ({ cardIndex, showCardDetail, card }) => {
           borderRadius="md"
           overflow="auto"
           _hover={{
-            backgroundColor: 'darkblue'
+            backgroundColor: 'lightblue'
           }}
           onClick={() => showCardDetail(card._id)}>
-          {card.title}
+          {card.label && (
+            <Badge bg={card.label.type} color={card.label.textColor}>
+              {card.label.type}
+            </Badge>
+          )}
+          <p>{card.title}</p>
         </Box>
       )}
     </Draggable>
