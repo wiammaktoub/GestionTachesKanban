@@ -8,7 +8,8 @@ const initialState = {
     name: '',
     columns: [],
     createdBy: '',
-    dateCreated: ''
+    dateCreated: '',
+    backgroundImage: ''
   },
   status: 'idle',
   isLoading: false,
@@ -25,7 +26,7 @@ export const saveBoard = createAsyncThunk('board/save', async (obj, { getState }
     name: board.board.name,
     dateCreated: board.board.dateCreated,
     createdBy: board.board.createdBy,
-    columns: board.board.columns
+    backgroundImage: board.board.backgroundImage
   };
 
   const url = `${host}/api/boards/${data._id}`;
@@ -105,7 +106,6 @@ export const boardSlice = createSlice({
       state.isLoading = true;
     },
     [saveBoard.fulfilled.toString()]: (state, { payload }) => {
-      state.board = payload;
       state.isLoading = false;
       state.status = 'success';
     },

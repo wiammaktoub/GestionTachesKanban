@@ -1,10 +1,12 @@
 import { Box, Heading, Button, Avatar, Tooltip } from '@chakra-ui/react';
+
 import PropType from 'prop-types';
 import BoardSettings from '@/src/components/sub-navbar/board-settings';
 import InviteModal from '@/src/components/sub-navbar/invite-user/modal';
 import React from 'react';
 import { useAppSelector } from '@/src/hooks';
 import Link from 'next/link';
+import UnsplashDrawer from '@/src/components/sub-navbar/unsplash-in-drawer';
 
 const SubNavbar = (): JSX.Element => {
   const board = useAppSelector((state) => state.board.board);
@@ -12,13 +14,12 @@ const SubNavbar = (): JSX.Element => {
 
   return (
     <Box
-      height="50px"
-      bg="brand"
-      boxShadow="md"
+      height="40px"
       display="flex"
       alignItems="center"
-      justifyContent="space-between">
-      <Heading ml="0.5rem" color="white" as="h3" size="lg" whiteSpace="nowrap" d="block">
+      justifyContent="space-between"
+      bg="rgba(0,0,0,0.1)">
+      <Heading ml="0.5rem" color="white" as="h4" size="sm" whiteSpace="nowrap" d="block">
         {board && board.name}
       </Heading>
       <Box>
@@ -34,6 +35,7 @@ const SubNavbar = (): JSX.Element => {
           </Button>
         </Link>
         <BoardSettings />
+        <UnsplashDrawer />
       </Box>
     </Box>
   );
