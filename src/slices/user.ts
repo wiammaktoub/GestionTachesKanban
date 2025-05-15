@@ -8,11 +8,11 @@ const initialState: UserDetail = {
   status: 'idle',
   email: '',
   password: '',
+  fullName: '',
   confirmPassword: '',
   isValid: false,
   isCreating: false,
   isFetching: false,
-  doneFetching: true,
   message: '',
   error: ''
 };
@@ -27,7 +27,8 @@ export const registerUser = createAsyncThunk('user/register', async (obj, { getS
     id: id,
     email: user.email,
     password: user.password,
-    confirmPassword: user.confirmPassword
+    confirmPassword: user.confirmPassword,
+    fullName: user.fullName
   };
 
   const url = `${host}/api/register`;
@@ -80,7 +81,7 @@ export const loginUser = createAsyncThunk('user/login', async (obj, { getState }
 export const fetchUser = createAsyncThunk('users/fetchUser', async (obj, { getState }) => {
   const { user } = getState() as { user: UserDetail };
 
-  const response = await fetch(`${host}/api/login/${user.id}`);
+  const response = await fetch(`${host}/api/users/${user.id}`);
   const responseInjson = await response.json();
 
   return responseInjson;
@@ -111,11 +112,9 @@ export const userSlice = createSlice({
       state.isCreating = false;
       state.message = payload && payload.message;
     },
-    [loginUser.pending.toString()]: (state, { payload }) => {
+    [loginUser.pending.toString()]: (state) => {
       state.status = 'pending';
-      state.doneFetching = false;
       state.isFetching = true;
-      state.message = payload && payload.message;
     },
     [loginUser.fulfilled.toString()]: (state, { payload }) => {
       state.status = 'success';
@@ -124,32 +123,25 @@ export const userSlice = createSlice({
       state.confirmPassword = undefined;
       state.error = (payload && payload.error) || '';
       state.isFetching = false;
-      state.doneFetching = true;
       state.message = payload && payload.message;
     },
     [loginUser.rejected.toString()]: (state, { payload }) => {
       state.status = 'failed';
-      state.doneFetching = true;
       state.isFetching = false;
       state.error = (payload && payload.error) || '';
       state.message = payload && payload.message;
     },
     [fetchUser.pending.toString()]: (state, { payload }) => {
       state.status = 'pending';
-      state.doneFetching = false;
-      state.message = payload && payload.message;
     },
     [fetchUser.fulfilled.toString()]: (state, { payload }) => {
       state.status = 'success';
-      state.error = payload && payload.error;
-      state.doneFetching = true;
-      state.id = payload && payload.id;
-      state.message = payload && payload.message;
+      state.id = payload && payload._id;
       state.email = payload && payload.email;
+      state.fullName = payload && payload.fullName;
     },
     [fetchUser.rejected.toString()]: (state, { payload }) => {
       state.status = 'failed';
-      state.doneFetching = true;
       state.error = payload && payload.error;
       state.message = payload && payload.message;
     }

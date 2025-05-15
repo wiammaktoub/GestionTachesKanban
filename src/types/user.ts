@@ -5,8 +5,8 @@ export type UserDetail = {
   confirmPassword?: string;
   status: string;
   isCreating: boolean;
-  doneFetching: boolean;
   isValid: boolean;
+  fullName: string;
   isFetching: boolean;
   message: string;
   error: string;
