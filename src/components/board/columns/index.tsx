@@ -14,6 +14,7 @@ import shortId from 'shortid';
 const BoardColumns: FC = (): JSX.Element => {
   const dispatch = useDispatch();
   const columns = useAppSelector((state) => state.columns.columns);
+  const cards = useAppSelector((state) => state.cards.cards);
 
   const [currentColumnIndex, setCurrentColumnIndex] = useState<number>(0);
   const [currentCardIndex, setCurrentCardIndex] = useState<number>(0);
@@ -46,17 +47,14 @@ const BoardColumns: FC = (): JSX.Element => {
 
     // Set the current card to state. This will update the fiels present in the modal
     setCardDetail({ ...tempCard });
-
-    // Fetch edit card column and update the edited card value in that column
-    const column = columns[currentColumnIndex];
-    column.cards[currentCardIndex] = tempCard;
-
-    // Fetch all the columns and update the edited column
-    const tempColumns = columns;
-    // tempColumns.splice(currentColumnIndex, 1, column);
-
-    // setColumns([...tempColumns]);
   };
+
+  const filterCards = (columnId: string) => {
+    const filteredCards = cards.filter((card) => card.columnId === columnId);
+
+    return filteredCards;
+  };
+
   return (
     <Box
       display="block"
@@ -71,6 +69,7 @@ const BoardColumns: FC = (): JSX.Element => {
             column={column}
             id={column._id}
             index={index}
+            cards={filterCards(column._id)}
             showCardDetail={showCardDetail}
           />
         ))}
