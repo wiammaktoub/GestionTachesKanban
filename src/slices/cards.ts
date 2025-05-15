@@ -18,6 +18,8 @@ type CardPatch = {
 const initialState = {
   cards: [],
   status: 'idle',
+  isRequesting: false,
+  isDeleting: false,
   doneFetching: true,
   error: {}
 };
@@ -109,15 +111,8 @@ export const updateCard = createAsyncThunk(
   'card/updateCard',
   async (obj: CardPatch, { getState }) => {
     const { board } = getState() as { board: BoardSlice };
-    const { _id, title, description, columnId } = obj;
 
-    const data = {
-      title,
-      description,
-      columnId
-    };
-
-    const url = `${host}/api/boards/${board.board._id}/cards/${_id}`;
+    const url = `${host}/api/boards/${board.board._id}/cards/${obj._id}`;
 
     const response = await fetch(url, {
       method: 'PATCH',
@@ -129,7 +124,7 @@ export const updateCard = createAsyncThunk(
       },
       redirect: 'follow',
       referrerPolicy: 'no-referrer',
-      body: JSON.stringify(data)
+      body: JSON.stringify(obj)
     });
 
     const inJSON = await response.json();
@@ -186,41 +181,53 @@ export const cardsSlice = createSlice({
   },
   extraReducers: {
     [addCard.pending.toString()]: (state) => {
+      state.isRequesting = true;
       state.status = 'pending';
     },
     [addCard.fulfilled.toString()]: (state) => {
       state.status = 'success';
+      state.isRequesting = false;
     },
     [addCard.rejected.toString()]: (state) => {
       state.status = 'failed';
+      state.isRequesting = false;
     },
     [fetchCards.pending.toString()]: (state) => {
       state.status = 'pending';
+      state.isRequesting = true;
     },
     [fetchCards.fulfilled.toString()]: (state, { payload }) => {
       state.cards = payload;
       state.status = 'success';
+      state.isRequesting = false;
     },
     [fetchCards.rejected.toString()]: (state) => {
       state.status = 'failed';
+      state.isRequesting = false;
     },
     [deleteCard.pending.toString()]: (state) => {
       state.status = 'pending';
+      state.isDeleting = true;
     },
     [deleteCard.fulfilled.toString()]: (state) => {
       state.status = 'success';
+      state.isDeleting = false;
     },
     [deleteCard.rejected.toString()]: (state) => {
       state.status = 'failed';
+      state.isDeleting = false;
     },
     [updateCard.pending.toString()]: (state) => {
       state.status = 'pending';
+      state.isRequesting = true;
     },
     [updateCard.fulfilled.toString()]: (state) => {
       state.status = 'success';
+      state.isRequesting = false;
     },
     [updateCard.rejected.toString()]: (state) => {
       state.status = 'failed';
+      state.isRequesting = false;
     },
     [updateCardSequence.pending.toString()]: (state) => {
       state.status = 'pending';
