@@ -10,14 +10,15 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalFooter,
-  Input
+  Input,
+  Text
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/src/hooks';
 import { updateBoardDetail, resetBoard } from '@/src/slices/board';
 import { createBoard } from '@/src/slices/boards';
-
+import { AiOutlinePlus } from 'react-icons/ai';
 import { fetchBoards } from '@/src/slices/boards';
 
 import shortId from 'shortid';
@@ -28,6 +29,8 @@ const Boards = (): JSX.Element => {
 
   const dispatch = useDispatch();
   const board = useAppSelector((state) => state.board.board);
+
+  const boardRequest = useAppSelector((state) => state.boards.isRequesting);
 
   const handleCreate = async () => {
     const id = shortId.generate();
@@ -55,7 +58,12 @@ const Boards = (): JSX.Element => {
   const createBoardModal = () => {
     return (
       <>
-        <Button onClick={onOpen} colorScheme="green" size="lg" mt="1rem">
+        <Button
+          onClick={onOpen}
+          leftIcon={<AiOutlinePlus />}
+          colorScheme="green"
+          size="lg"
+          mt="1rem">
           Create a board
         </Button>
         <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -71,7 +79,9 @@ const Boards = (): JSX.Element => {
               />
             </ModalBody>
             <ModalFooter>
-              <Button onClick={handleCreate}>Create</Button>
+              <Button onClick={handleCreate} isLoading={boardRequest} loadingText="Creating board">
+                Create
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -81,7 +91,7 @@ const Boards = (): JSX.Element => {
 
   const loadExistingBoards = () => {
     return (
-      <Box mt="1rem" minWidth="50vw">
+      <Box mt="1rem" minWidth="50vw" display="flex" flexWrap="wrap">
         {boards.map((board, index) => (
           <Link
             key={index}
@@ -89,9 +99,33 @@ const Boards = (): JSX.Element => {
               pathname: '/boards/[slug]',
               query: { slug: board._id }
             }}>
-            <Button key={index} mr=".5rem">
-              {board.name}
-            </Button>
+            <Box
+              mr="1rem"
+              mt="1rem"
+              height="150px"
+              width="150px"
+              background={`linear-gradient(
+                rgba(0, 0, 0, 0.4),
+                rgba(0, 0, 0, 0.4)
+              ),
+              url(${board.backgroundImage})`}
+              backgroundPosition="center"
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+              borderRadius="5px"
+              boxShadow="lg"
+              cursor="pointer">
+              <Text
+                marginTop="calc(50% - 25px)"
+                height="25px"
+                textAlign="center"
+                textTransform="capitalize"
+                color="white"
+                fontSize="20px"
+                fontWeight="bold">
+                {board.name}
+              </Text>
+            </Box>
           </Link>
         ))}
       </Box>
@@ -99,8 +133,7 @@ const Boards = (): JSX.Element => {
   };
 
   return (
-    <Box flexGrow={3} mx="2%" boxShadow="md" rounded="lg" bg="white" p="1rem">
-      <h1>Boards page</h1>
+    <Box flexGrow={3} mx="2%" boxShadow="base" rounded="lg" bg="white" p="1rem">
       {createBoardModal()}
       {loadExistingBoards()}
     </Box>

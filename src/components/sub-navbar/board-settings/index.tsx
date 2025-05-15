@@ -30,6 +30,7 @@ const BoardSettings = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const board = useAppSelector((state) => state.board.board);
   const boardDetail = useAppSelector((state) => state.board);
+  const boardDelete = useAppSelector((state) => state.board.isLoading);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -50,7 +51,7 @@ const BoardSettings = (): JSX.Element => {
 
   return (
     <>
-      <Button onClick={onOpen} size="xs" as={Button} mr="10px">
+      <Button onClick={onOpen} size="xs" as={Button} m="5px">
         <AiFillSetting />
       </Button>
       <Modal onClose={onClose} isOpen={isOpen} size="xl" isCentered>
@@ -95,7 +96,9 @@ const BoardSettings = (): JSX.Element => {
                       onClick={handleDelete}
                       _hover={{
                         backgroundColor: 'red.600'
-                      }}>
+                      }}
+                      isLoading={boardDelete}
+                      loadingText="Deleting">
                       <AiOutlineDelete /> &nbsp;Delete
                     </Button>
                   </Box>

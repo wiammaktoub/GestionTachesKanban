@@ -10,13 +10,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     switch (requestType) {
       case 'POST': {
-        const { _id, name, dateCreated, createdBy } = req.body;
+        const { _id, name, dateCreated, createdBy, backgroundImage } = req.body;
 
         const data = {
           _id,
           name,
           dateCreated,
-          createdBy
+          createdBy,
+          backgroundImage,
+          users: []
         };
 
         const board = await db.collection('boards').insertOne(data);
@@ -31,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const boards = await db
           .collection('boards')
           .find({ createdBy: userid })
-          .limit(10)
+          .limit(30)
           .toArray();
         res.send(boards);
 
