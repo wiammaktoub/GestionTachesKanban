@@ -1,6 +1,8 @@
+import type { NextApiRequest, NextApiResponse } from 'next';
+
 import { connectToDatabase } from '@/util/mongodb';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const { db, client } = await connectToDatabase();
 
   if (client.isConnected()) {
@@ -24,8 +26,15 @@ export default async function handler(req, res) {
         return;
       }
       case 'GET': {
-        const boards = await db.collection('boards').find({}).limit(10).toArray();
+        const { userid } = req.query;
+
+        const boards = await db
+          .collection('boards')
+          .find({ createdBy: userid })
+          .limit(10)
+          .toArray();
         res.send(boards);
+
         return;
       }
 

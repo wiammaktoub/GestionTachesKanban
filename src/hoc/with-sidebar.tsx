@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Box, Button } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import {
   AiOutlineHome,
   AiOutlineSetting,
@@ -9,10 +9,22 @@ import {
 import Link from 'next/link';
 import NavBar from '@/src/components/navbar';
 
-const withSidebar = (WrappedComponent, props) => {
+const withSidebar = (App, props) => {
   return class BoardWithSidebar extends Component {
     constructor(props) {
       super(props);
+    }
+
+    static async getInitialProps(ctx) {
+      let appProps = {};
+
+      if (App.getInitialProps) {
+        appProps = await App.getInitialProps(ctx);
+      }
+
+      return {
+        ...appProps
+      };
     }
 
     render() {
@@ -28,28 +40,29 @@ const withSidebar = (WrappedComponent, props) => {
       return (
         <>
           <NavBar bg="white" />
-          <Container maxW="container.xl" display="table">
-            <Box display="flex" mt="5%">
-              <Box minHeight="50vh" width="25vw" boxShadow="lg" rounded="lg" p="1em">
-                <Box display="flex" flexDirection="column">
-                  {sidebarMenu.map((menu, index) => (
-                    <Link href={menu.path} key={index}>
-                      <Button
-                        mb="5px"
-                        display="flex"
-                        justifyContent="left"
-                        colorScheme={page === menu.page ? 'blue' : 'gray'}>
-                        <>
-                          <menu.icon /> &nbsp; {menu.buttonName}
-                        </>
-                      </Button>
-                    </Link>
-                  ))}
-                </Box>
+          <Box display="flex" mt="2%">
+            <Box height="80vh" width="20vw" boxShadow="md" rounded="lg" p="1em" ml="20px">
+              <Box display="flex" flexDirection="column">
+                {sidebarMenu.map((menu, index) => (
+                  <Link href={menu.path} key={index}>
+                    <Button
+                      mt="5px"
+                      mb="5px"
+                      height="4rem"
+                      borderRadius="1rem"
+                      display="flex"
+                      justifyContent="left"
+                      colorScheme={page === menu.page ? 'blue' : 'gray'}>
+                      <>
+                        <menu.icon size="20px" /> &nbsp; {menu.buttonName}
+                      </>
+                    </Button>
+                  </Link>
+                ))}
               </Box>
-              <WrappedComponent />
             </Box>
-          </Container>
+            <App />
+          </Box>
         </>
       );
     }

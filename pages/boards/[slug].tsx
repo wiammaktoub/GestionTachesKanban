@@ -5,6 +5,10 @@ import { setOrGetStore } from '@/util/initialise-store';
 import { Provider } from 'react-redux';
 import { RootState } from '@/src/store';
 import { GetServerSideProps } from 'next';
+import { updateUserData } from '@/src/slices/user';
+import { fetchColumns } from '@/src/slices/columns';
+
+import isValidUser from '@/util/is-valid-user';
 
 type Props = {
   state: RootState;
@@ -20,12 +24,30 @@ const BoardPage: FC<Props> = ({ state }) => {
 
 export default BoardPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const reduxStore = setOrGetStore();
   const { dispatch } = reduxStore;
 
+  const userDetails = isValidUser(ctx);
+
+  if (userDetails && !userDetails.isValid && typeof window === 'undefined') {
+    ctx.res.writeHead(307, {
+      Location: '/login'
+    });
+
+    ctx.res.end();
+  }
+
+  await dispatch(updateUserData({ type: 'isValid', value: true }));
+
   // https://github.com/reduxjs/redux-toolkit/issues/489
-  await dispatch(fetchBoard(params.slug.toString()));
+  await dispatch(fetchBoard(ctx.params.slug.toString()));
+  await dispatch(fetchColumns());
+
+  if (ctx.req) {
+    await dispatch(updateUserData({ type: 'id', value: userDetails && userDetails.id }));
+  }
+
   const state = await reduxStore.getState();
   // Pass post data to the page via props
   return { props: { state } };

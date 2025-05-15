@@ -1,15 +1,15 @@
 export type Board = {
-  _id: string;
+  _id?: string;
   name: string;
   columns?: Columns[];
-  createdBy: string;
-  dateCreated: string;
+  createdBy?: string;
+  dateCreated?: string;
 };
 
 export type BoardSlice = {
   board: Board;
   status: string;
-  doneFetching: boolean;
+  isLoading: boolean;
   error: string;
 };
 

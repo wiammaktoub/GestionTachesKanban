@@ -1,51 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Flex, Box, FormControl, Input, Button, Image, Link } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { useAppSelector } from '@/src/hooks';
+import { useDispatch } from 'react-redux';
+import { loginUser, updateUserData } from '@/src/slices/user';
 
-const Login = () => {
+const Login = (): JSX.Element => {
+  const user = useAppSelector((state) => state.user);
+
   const router = useRouter();
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const dispatch = useDispatch();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.name === 'username') {
-      setUsername(e.target.value);
-    } else {
-      setPassword(e.target.value);
-    }
-  };
+  if (!user.error && user.status === 'success') {
+    router.push('/home');
+  }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
 
-    const data = {
-      email: username,
-      password
+    const payload = {
+      type: name,
+      value: value
     };
 
-    const response = await postData('/api/login', data);
-    if (response.status === 200) {
-      router.push('/home');
-    } else {
-      alert('Invalid Credentials');
-    }
+    await dispatch(updateUserData(payload));
   };
 
-  async function postData(url = '', data = {}) {
-    const response = await fetch(url, {
-      method: 'POST',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      redirect: 'follow', // manual, *follow, error
-      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
+    await dispatch(loginUser());
+  };
 
   return (
     <>
@@ -102,22 +87,30 @@ const Login = () => {
               <FormControl>
                 <Input
                   type="email"
-                  name="username"
-                  value={username}
+                  name="email"
+                  value={user.email}
                   placeholder="Enter Email "
                   onChange={handleChange}
+                  autoComplete="off"
                 />
               </FormControl>
               <FormControl mt={6}>
                 <Input
                   type="password"
                   name="password"
-                  value={password}
+                  value={user.password}
                   placeholder="Enter Password"
                   onChange={handleChange}
                 />
               </FormControl>
-              <Button width="full" mt={4} bg="success" color="white" onClick={handleSubmit}>
+              <Button
+                width="full"
+                mt={4}
+                bg="success"
+                color="white"
+                onClick={handleSubmit}
+                isLoading={user.isFetching}
+                loadingText="Logging">
                 Sign In
               </Button>
               <Box m="5" textAlign="center">

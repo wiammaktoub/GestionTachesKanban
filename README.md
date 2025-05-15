@@ -1,24 +1,3 @@
-
-# GestionTachesKanban
-
-## Objectifs du Projet
-- Fournir un outil de gestion des tâches simple et intuitif.
-- Permettre une collaboration fluide entre les membres d'une équipe.
-- Assurer un suivi efficace des tâches via un tableau Kanban.
-
-## Membres de l'Équipe
-- **MAKTOUB Wiam**
-- **DAKIR ALLAH Abderrahman**
-- **HADDADIA Saad**
-- **BENGOUG Cheikh Hadrami**
-
-## Liste des Fonctionnalités Principales
-- Inscription et authentification des utilisateurs.
-- Création, modification et suppression des tâches.
-- Attribution des tâches aux membres.
-- Affichage sous forme de tableau Kanban.
-
-
 # trello-clone
 
 This is a clone application for trello. This has built for leaning purpose. Below are the tech stacks which have been used to build it.
@@ -48,5 +27,14 @@ Install docker on your machine and start it
 ## Some free resources used in this project
 
 1. [Color Code](https://www.designpieces.com/palette/trello-color-palette-hex-and-rgb/)
-2. [Illustration](https://www.uistore.design/items/free-remote-work-illustrations/?ref=lapaninja)
+2. [Illustration](https://undraw.co/illustrations)
 3. [Icons](https://github.com/react-icons/react-icons)
+
+## What is next?
+
+1. Add card drag and drop - Ankit
+2. Add column drag and drop - Ankit
+3. Delete user - Nidhi
+4. Add unsplash - Nidhi
+5. Load only boards assigned to user - Ankit
+6. Verify email on sign up - Ankit

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Box,
   Button,
@@ -15,12 +15,14 @@ import {
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '@/src/hooks';
-import { createBoard, updateBoardDetail, resetBoard } from '@/src/slices/board';
+import { updateBoardDetail, resetBoard } from '@/src/slices/board';
+import { createBoard } from '@/src/slices/boards';
+
 import { fetchBoards } from '@/src/slices/boards';
 
 import shortId from 'shortid';
 
-const Boards = () => {
+const Boards = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const boards = useAppSelector((state) => state.boards.boards);
 
@@ -97,12 +99,10 @@ const Boards = () => {
   };
 
   return (
-    <Box>
-      <Box minHeight="50vh" flexGrow={3} ml="2%" boxShadow="lg" rounded="lg" bg="white" p="1rem">
-        <h1>Boards page</h1>
-        {createBoardModal()}
-        {loadExistingBoards()}
-      </Box>
+    <Box flexGrow={3} mx="2%" boxShadow="md" rounded="lg" bg="white" p="1rem">
+      <h1>Boards page</h1>
+      {createBoardModal()}
+      {loadExistingBoards()}
     </Box>
   );
 };
