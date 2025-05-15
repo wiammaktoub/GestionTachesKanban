@@ -8,7 +8,10 @@ import { CardDetail } from '@/src/types/cards';
 import { useAppSelector } from '@/src/hooks';
 import { useDispatch } from 'react-redux';
 import { addColumnToBoard, fetchColumns } from '@/src/slices/columns';
+import { updateCardSequence, updateCardSequenceToLocalState } from '@/src/slices/cards';
+
 import shortId from 'shortid';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 const BoardColumns: FC = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -32,39 +35,83 @@ const BoardColumns: FC = (): JSX.Element => {
     await dispatch(fetchColumns());
   };
 
-  const handleCardChange = (event) => {
-    // Fetch active card and update the value
-    const tempCard = cardDetail;
-    tempCard[event.target.name] = event.target.value;
-
-    // Set the current card to state. This will update the fiels present in the modal
-    setCardDetail({ ...tempCard });
-  };
-
   const filterCards = (columnId: string) => {
     const filteredCards = cards.filter((card) => card.columnId === columnId);
 
     return filteredCards;
   };
 
+  const onDragEnd = async (result) => {
+    const { destination, source, draggableId } = result;
+
+    // Don't do anything where there is not desitination
+    if (!destination) {
+      return;
+    }
+
+    // Do nothing if the card is put back where it was
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+      return;
+    }
+
+    // If card movement in the same column
+    await saveCardSequence(destination.index, destination.droppableId, draggableId);
+  };
+
+  const saveCardSequence = async (
+    destinationIndex: number,
+    destinationColumnId: string,
+    cardId: string
+  ) => {
+    const cardsFromColumn = cards.filter(
+      (card) => card.columnId === destinationColumnId && card._id !== cardId
+    );
+    const sortedCards = cardsFromColumn.sort((a, b) => a.sequence - b.sequence);
+
+    let sequence = destinationIndex === 0 ? 1 : sortedCards[destinationIndex - 1].sequence + 1;
+
+    const patchCard = {
+      _id: cardId,
+      sequence,
+      columnId: destinationColumnId
+    };
+
+    // This is just for updating local state so that there won't be any lag after saving the sequence and fetching again
+    // Now we don't to fetch the cards again
+    await dispatch(updateCardSequenceToLocalState(patchCard));
+    await dispatch(updateCardSequence(patchCard));
+
+    for (let i = destinationIndex; i < sortedCards.length; i++) {
+      const card = sortedCards[i];
+
+      sequence += 1;
+
+      const patchCard = {
+        _id: card._id,
+        sequence,
+        columnId: destinationColumnId
+      };
+
+      await dispatch(updateCardSequenceToLocalState(patchCard));
+      await dispatch(updateCardSequence(patchCard));
+    }
+  };
+
   return (
-    <Box
-      display="block"
-      position="relative"
-      height="calc(100vh - 122px)"
-      overflowX="auto"
-      id="parent-of-columns">
-      <Box display="flex" position="absolute" overflowY="auto" height="100%">
-        {columns.map((column, index) => (
-          <Column
-            key={index}
-            column={column}
-            id={column._id}
-            index={index}
-            cards={filterCards(column._id)}
-            showCardDetail={showCardDetail}
-          />
-        ))}
+    <Box display="block" position="relative" height="calc(100vh - 122px)" overflowX="auto">
+      <Box display="flex" position="absolute" overflowY="auto">
+        <DragDropContext onDragEnd={onDragEnd}>
+          {columns.map((column, index) => (
+            <Column
+              key={index}
+              column={column}
+              id={column._id}
+              index={index}
+              cards={filterCards(column._id)}
+              showCardDetail={showCardDetail}
+            />
+          ))}
+        </DragDropContext>
         <AddColumnButton addColumn={addColumn} />
       </Box>
       {isOpen && <CardDetailsModal isOpen={isOpen} onClose={onClose} card={cardDetail} />}

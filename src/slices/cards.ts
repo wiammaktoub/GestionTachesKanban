@@ -1,13 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import checkEnvironment from '@/util/check-environment';
 import { SingleUser } from '@/src/types/user';
+import { CardSlice } from '@/src/types/cards';
+
 import { BoardSlice } from '@/src/types/boards';
 import shortId from 'shortid';
+import findIndex from 'lodash.findindex';
 
 type CardPatch = {
   _id: string;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
+  columnId?: string;
+  sequence?: number;
 };
 
 const initialState = {
@@ -56,6 +61,15 @@ export const deleteCard = createAsyncThunk(
 export const addCard = createAsyncThunk('card/addCard', async (columnId: string, { getState }) => {
   const { board } = getState() as { board: BoardSlice };
   const { user } = getState() as { user: SingleUser };
+  const { cards } = getState() as { cards: CardSlice };
+
+  const filteredCards = cards.cards.filter((card) => card.columnId === columnId);
+
+  let sequence = 1;
+
+  if (filteredCards.length > 0) {
+    sequence = filteredCards[filteredCards.length - 1].sequence + 1;
+  }
 
   const cardId = shortId.generate();
 
@@ -67,7 +81,8 @@ export const addCard = createAsyncThunk('card/addCard', async (columnId: string,
     type: '',
     description: '',
     dateCreated: new Date().toLocaleString(),
-    userId: user.id
+    userId: user.id,
+    sequence
   };
 
   const url = `${host}/api/boards/${data.boardId}/columns/${columnId}/cards`;
@@ -94,11 +109,46 @@ export const updateCard = createAsyncThunk(
   'card/updateCard',
   async (obj: CardPatch, { getState }) => {
     const { board } = getState() as { board: BoardSlice };
-    const { _id, title, description } = obj;
+    const { _id, title, description, columnId } = obj;
 
     const data = {
       title,
-      description
+      description,
+      columnId
+    };
+
+    const url = `${host}/api/boards/${board.board._id}/cards/${_id}`;
+
+    const response = await fetch(url, {
+      method: 'PATCH',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify(data)
+    });
+
+    const inJSON = await response.json();
+
+    return inJSON;
+  }
+);
+
+export const updateCardSequence = createAsyncThunk(
+  'card/updateCardSequence',
+  async (obj: CardPatch, { getState }) => {
+    const { board } = getState() as { board: BoardSlice };
+    const { _id, title, description, columnId, sequence } = obj;
+
+    const data = {
+      title,
+      description,
+      columnId,
+      sequence
     };
 
     const url = `${host}/api/boards/${board.board._id}/cards/${_id}`;
@@ -126,7 +176,13 @@ export const cardsSlice = createSlice({
   name: 'cards',
   initialState: initialState,
   reducers: {
-    resetCards: () => initialState
+    resetCards: () => initialState,
+    updateCardSequenceToLocalState: (state, { payload }) => {
+      const cardIndex = findIndex(state.cards, { _id: payload._id });
+
+      state.cards[cardIndex].sequence = payload.sequence;
+      state.cards[cardIndex].columnId = payload.columnId;
+    }
   },
   extraReducers: {
     [addCard.pending.toString()]: (state) => {
@@ -165,10 +221,19 @@ export const cardsSlice = createSlice({
     },
     [updateCard.rejected.toString()]: (state) => {
       state.status = 'failed';
+    },
+    [updateCardSequence.pending.toString()]: (state) => {
+      state.status = 'pending';
+    },
+    [updateCardSequence.fulfilled.toString()]: (state) => {
+      state.status = 'success';
+    },
+    [updateCardSequence.rejected.toString()]: (state) => {
+      state.status = 'failed';
     }
   }
 });
 
-export const { resetCards } = cardsSlice.actions;
+export const { resetCards, updateCardSequenceToLocalState } = cardsSlice.actions;
 
 export default cardsSlice.reducer;
