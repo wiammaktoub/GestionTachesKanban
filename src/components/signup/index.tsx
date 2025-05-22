@@ -1,14 +1,34 @@
 import React from 'react';
-import { Flex, Box, FormControl, Input, Button, Image, Link, useToast } from '@chakra-ui/react';
-import { updateUserData, registerUser, resetUserData } from '@/src/slices/user';
-import { useDispatch } from 'react-redux';
-import { useAppSelector } from '@/src/hooks';
+import {
+  Flex,
+  Box,
+  FormControl,
+  Input,
+  Button,
+  Image,
+  Link,
+  useToast,
+  Alert,
+  AlertDescription,
+  CloseButton,
+  AlertTitle,
+  AlertIcon
+} from '@chakra-ui/react';
 import { useState } from 'react';
+import shortId from 'shortid';
+import checkEnvironment from '@/util/check-environment';
 import { useRouter } from 'next/router';
 
 const SignUp = (): JSX.Element => {
-  const dispatch = useDispatch();
-  const user = useAppSelector((state) => state.user);
+  const [values, setValues] = useState({
+    email: '',
+    password: '',
+    fullName: '',
+    confirmPassword: ''
+  });
+  const [isCreating, setIsCreatingStatus] = useState(false);
+  const [hasError, setErrorState] = useState(false);
+
   const toast = useToast();
   const router = useRouter();
 
@@ -17,55 +37,125 @@ const SignUp = (): JSX.Element => {
   const validEmail = new RegExp('^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$');
   const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$');
 
-  if (!user.isCreating && user.message === 'success') {
-    dispatch(resetUserData());
-  }
-
   const validate = () => {
-    if (!validEmail.test(user.email)) {
+    if (!validEmail.test(values.email)) {
       setEmailErr(true);
     } else {
       setEmailErr(false);
     }
-    if (!validPassword.test(user.password)) {
+
+    if (!validPassword.test(values.password)) {
       setPasswordErr(true);
     } else {
       setPasswordErr(false);
     }
   };
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const payload = {
-      type: name,
-      value: value
-    };
-
-    await dispatch(updateUserData(payload));
-    validate();
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    await dispatch(registerUser());
-    showToast();
-    setTimeout(() => {
-      router.push('/login');
-    }, 3000);
-  };
-
   const showToast = () => {
     toast({
       position: 'top',
       title: 'Account created.',
-      description:
-        "We've created your account for you. Redirecting you to login page in 3 seconds ",
+      description: "We've created your account. Redirecting you to login page in 3 seconds ",
       status: 'success',
       duration: 2500,
       isClosable: true
     });
   };
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+    setIsCreatingStatus(true);
+
+    const id = shortId.generate();
+    const host = checkEnvironment();
+
+    const { email, password, confirmPassword, fullName } = values;
+
+    const data = {
+      id,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      fullName: fullName
+    };
+
+    const url = `${host}/api/register`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      redirect: 'follow',
+      referrerPolicy: 'no-referrer',
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    setIsCreatingStatus(false);
+
+    if (response.status === 404) {
+      setErrorState(true);
+    }
+
+    const { email: inviteEmail, token, boardId } = router.query;
+    const isInvitedUser = inviteEmail && token && boardId;
+
+    if (isInvitedUser && result.message === 'success') {
+      redirectToLoginPage(`/login?token=${token}&email=${inviteEmail}&boardId=${boardId}`);
+    } else {
+      if (result.message === 'success') {
+        redirectToLoginPage();
+      }
+    }
+  };
+
+  const redirectToLoginPage = (path = '/login') => {
+    showToast();
+
+    setTimeout(() => {
+      window.location.href = path;
+    }, 3000);
+  };
+
+  const showSignUpError = () => {
+    if (!hasError) return;
+
+    return (
+      <Alert status="error">
+        <AlertIcon />
+        <AlertTitle mr={2}>Error</AlertTitle>
+        <AlertDescription>Email already in use</AlertDescription>
+        <CloseButton
+          position="absolute"
+          right="8px"
+          top="8px"
+          onClick={() => setErrorState(!hasError)}
+        />
+      </Alert>
+    );
+  };
+
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setValues({
+      ...values,
+      [name]: value
+    });
+
+    validate();
+  };
+
+  const isButtonDisabled = () => {
+    const isValidPassword = values.password !== values.confirmPassword;
+    const isDisabled = !values.email || !values.fullName;
+
+    return isValidPassword || isDisabled || !values.password || !values.confirmPassword;
+  };
+
   return (
     <>
       <Box display="flex">
@@ -121,7 +211,7 @@ const SignUp = (): JSX.Element => {
               <Input
                 type="email"
                 name="email"
-                value={user.email}
+                value={values.email}
                 placeholder="Enter Email"
                 onChange={handleChange}
                 autoComplete="off"
@@ -132,7 +222,7 @@ const SignUp = (): JSX.Element => {
               <Input
                 type="text"
                 name="fullName"
-                value={user.fullName}
+                value={values.fullName}
                 placeholder="Full name"
                 onChange={handleChange}
                 autoComplete="off"
@@ -142,7 +232,7 @@ const SignUp = (): JSX.Element => {
               <Input
                 type="password"
                 name="password"
-                value={user.password}
+                value={values.password}
                 placeholder="Create password"
                 onChange={handleChange}
               />
@@ -152,7 +242,7 @@ const SignUp = (): JSX.Element => {
               <Input
                 type="password"
                 name="confirmPassword"
-                value={user.confirmPassword}
+                value={values.confirmPassword}
                 placeholder="Confirm password"
                 onChange={handleChange}
               />
@@ -161,11 +251,11 @@ const SignUp = (): JSX.Element => {
               fontWeight="semibold"
               width="full"
               mt={4}
-              disabled={user.password !== user.confirmPassword}
+              disabled={isButtonDisabled()}
               bg="success"
               color="white"
-              onClick={handleSubmit}
-              isLoading={user.isCreating}
+              onClick={registerUser}
+              isLoading={isCreating}
               loadingText="Registering">
               Sign up
             </Button>
@@ -174,6 +264,7 @@ const SignUp = (): JSX.Element => {
                 Already have an account? Log in.
               </Link>
             </Box>
+            {showSignUpError()}
           </Box>
         </Box>
       </Flex>

@@ -1,28 +1,21 @@
-# trello-clone ![Build status](https://github.com/knowankit/trello-clone/actions/workflows/main.yml/badge.svg)
+# GestionTachesKanban
 
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+## Objectifs du Projet
+- Fournir un outil de gestion des tâches simple et intuitif.
+- Permettre une collaboration fluide entre les membres d'une équipe.
+- Assurer un suivi efficace des tâches via un tableau Kanban.
 
-![Trello clone](https://github.com/knowankit/trello-clone/blob/develop/demo.gif)
-<p align="center">
-  <a href="https://twitter.com/knowankit">
-    <img alt="Twitter: Ankit Kumar" src="https://img.shields.io/twitter/follow/knowankit.svg?style=social" target="_blank" />
-  </a>
-</p>
+## Membres de l'Équipe
+- **MAKTOUB Wiam**
+- **DAKIR ALLAH Abderrahman**
+- **HADDADIA Saad**
+- **BENGOUG Cheikh Hadrami**
 
-- [Overview](#overview)
-- [Features](#features-🤩)
-- [Requirements](#requirements)
-- [Installation](#steps-to-run-this-on-your-local)
-  - [1. **Clone the application**](#1-clone-the-application)
-  - [2. **Install necessary dependencies for the application**](#2-install-necessary-dependencies-for-the-application)
-  - [3. **Create a .env file and copy the contents from .env.example**](#3-create-a-env-file-and-copy-the-contents-from-envexample)
-  - [4. **Start the application**](#4-start-the-application)
-- [License](#license)
-
-## Overview
-
-[Preview](https://trello-clone-one.vercel.app/) This is a clone application for trello. This has been built for learning purpose. My plan is to improve the project and add more features in every release.
-
+## Liste des Fonctionnalités Principales
+- Inscription et authentification des utilisateurs.
+- Création, modification et suppression des tâches.
+- Attribution des tâches aux membres.
+- Affichage sous forme de tableau Kanban.
 ## Features 🤩
 
 - Login/Register with JWT token authentication
