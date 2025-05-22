@@ -1,86 +1,109 @@
 # GestionTachesKanban
 
-## Objectifs du Projet
-- Fournir un outil de gestion des tâches simple et intuitif.
-- Permettre une collaboration fluide entre les membres d'une équipe.
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+
+## 🎯 Objectifs du Projet
+
+- Fournir un outil de gestion des tâches simple et intuitif.  
+- Permettre une collaboration fluide entre les membres d'une équipe.  
 - Assurer un suivi efficace des tâches via un tableau Kanban.
 
-## Membres de l'Équipe
-- **MAKTOUB Wiam**
-- **DAKIR ALLAH Abderrahman**
-- **HADDADIA Saad**
-- **BENGOUG Cheikh Hadrami**
+---
 
-## Liste des Fonctionnalités Principales
-- Inscription et authentification des utilisateurs.
-- Création, modification et suppression des tâches.
-- Attribution des tâches aux membres.
-- Affichage sous forme de tableau Kanban.
-## Features 🤩
+## 👥 Membres de l'Équipe
 
-- Login/Register with JWT token authentication
-- Ability to create/update/delete the board
-- Ability to add/update/move/delete the card
-- Background image library for the board
-- Add labels to the card
-- Supports adding of detail description in the card
+- MAKTOUB Wiam  
+- DAKIR ALLAH Abderrahman  
+- HADDADIA Saad  
+- BENGOUG Cheikh Hadrami
 
-## Requirements
+---
 
-1. [Node.js](https://nodejs.org/)
-2. [npm](https://www.npmjs.com/)
+## 📝 Liste des Fonctionnalités Principales
 
-## Steps to run this on your local
+- Inscription et authentification des utilisateurs  
+- Création, modification et suppression des tâches  
+- Attribution des tâches aux membres  
+- Affichage des tâches sous forme de tableau Kanban
 
-First install the MongoDB Compass for better visualization of data with MongoDB server.
+---
 
-1. Clone this repo using `git clone https://github.com/knowankit/trello-clone.git`
-2. Create _.env.local_ and add this env variable `LOCAL_MONGODB=mongodb://localhost:27017/trello`
-3. Run `yarn install`
-4. Run `yarn dev`
+## Fonctionnalités 🤩
 
-`For unsplash gallery, api key is needed which can be generated from unsplash website`
+- Connexion/Inscription avec authentification via jeton JWT  
+- Possibilité de créer, modifier et supprimer un tableau  
+- Possibilité d’ajouter, modifier, déplacer et supprimer une carte  
+- Bibliothèque d’images de fond pour le tableau  
+- Ajout d’étiquettes aux cartes  
+- Ajout d’une description détaillée aux cartes  
 
-### If you want to run the project using docker
+---
 
-Install docker on your machine and start it
+## ⚙️ Prérequis
 
-1. Create _.env.development_ file.
-2. Add `LOCAL_MONGODB=mongodb://mongodb:27017/trello`
-3. Run `docker-compose up`
+- [Node.js](https://nodejs.org/)  
+- [npm](https://www.npmjs.com/)
 
-## What's next 🚀
+---
 
-- Assign a card to the user
-- Comment on the card
-- Invite user to the board (In progress)
+## 🛠️ Étapes pour exécuter ce projet en local
 
-## Tech stacks
+> 💡 **Installez d’abord MongoDB Compass** pour une meilleure visualisation des données avec le serveur MongoDB.
 
-- Nextjs with typescript
-- MongoDB for local development
-- Mongo Atlas for production DB
-- Chakra UI library
+1. Cloner ce dépôt avec la commande :  
+   ```bash
+   git clone https://github.com/your-username/GestionTachesKanban.git
 
-## Some free resources used in this project
+2. Créez un fichier .env.local et ajoutez :
 
+  LOCAL_MONGODB=mongodb://localhost:27017/kanban 
+
+
+3. Installer les dépendances :
+   ```bash
+   yarn install
+
+4. Lancer le projet :
+    ```bash
+   yarn dev
+
+## 🐳  Exécution avec Docker
+1. Installez Docker sur votre machine et démarrez-le
+   
+2. Créez un fichier .env.development
+   
+3.   Ajoutez :
+ 
+      LOCAL_MONGODB=mongodb://mongodb:27017/kanban
+4. Lancez l'application avec : 
+   
+   ```bash
+    docker-compose up
+
+
+## 🚀  Prochaines fonctionnalités
+-Attribution d’une carte à un utilisateur
+-Ajout de commentaires sur les cartes
+-Invitation d’un utilisateur à rejoindre un tableau (En cours)
+
+## 🧰 Technologies utilisées
+-Next.js avec TypeScript
+-MongoDB pour le développement local
+-Mongo Atlas pour la base de données en production
+-Librairie Chakra UI
+
+## 📚 Ressources utilisées
 1. [Color Code](https://www.designpieces.com/palette/trello-color-palette-hex-and-rgb/)
 2. [Illustration](https://undraw.co/illustrations)
 3. [Icons](https://github.com/react-icons/react-icons)
 
-## Support
+## 💌 Support
 
-Reach out to the maintainer at one of the following places:
+Vous pouvez contacter le mainteneur :
+- Par e-mail [in GitHub profile](https://github.com/wiammaktoub)
 
-- The email which is located [in GitHub profile](https://github.com/knowankit)
-- [Portfolio] (https://knowankit.com)
 
-## Contributing
+## 🤝 Contribution
 
-All contributions are welcome!
-
-## License
-
-This project is licensed under the **MIT license**. Feel free to edit and distribute this template as you like.
-
-See [LICENSE](LICENSE) for more information.
+Toutes les contributions sont les bienvenues !
+N’hésitez pas à proposer des améliorations ou signaler des bugs.
