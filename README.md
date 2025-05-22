@@ -52,7 +52,7 @@
 
 1. Cloner ce dépôt avec la commande :  
    ```bash
-   git clone https://github.com/your-username/GestionTachesKanban.git
+   git clone https://github.com/wiammaktoub/GestionTachesKanban.git
 
 2. Créez un fichier .env.local et ajoutez :
 
