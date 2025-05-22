@@ -16,9 +16,11 @@ const isUserExists = async (db, email) => {
 };
 
 const createUser = async (body, res) => {
-  const { email, password, id, fullName } = body;
-  // Check if user email already exists
-  const { db, client } = await connectToDatabase();
+  const { email, password, confirmPassword, id } = body;
+
+  if (password === confirmPassword) {
+    // Check if user email already exists
+    const { db, client } = await connectToDatabase();
 
   if (client.isConnected()) {
     const isExistingUser = await isUserExists(db, email);
@@ -29,28 +31,22 @@ const createUser = async (body, res) => {
         status: 400
       };
 
-      res.send(data);
-      return;
-    }
-
-    // Create User
-    let user = {};
-
-    hash(password, SALTROUNDS, async (err, hash) => {
-      // Store hash in your password DB.
-      user = await db.collection('users').insertOne({ _id: id, email, password: hash, fullName });
-    });
+        res.send(data);
+      } else {
+        let user = {};
+        hash(password, SALTROUNDS, async (err, hash) => {
+          // Store hash in your password DB.
+          user = await db.collection('users').insertOne({ _id: id, email, password: hash });
+        });
 
     if (user) {
       const data = {
         message: 'success'
       };
 
-      res.status(200).send(data);
-      return;
-    }
-
-    res.status(200).send({ message: 'failed' });
+          res.status(200).send(data);
+        }
+      }
 
     return;
   } else {
